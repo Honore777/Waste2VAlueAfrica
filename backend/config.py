@@ -1,8 +1,18 @@
+from dotenv import load_dotenv
 import os
 
-class Config:
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv()
 
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:aRSENEANTONIO%4077@db.qzpzupwxeawxrmpchqsb.supabase.co:5432/postgres?sslmode=require'
+class Config:
+    USER = os.getenv("USER")
+    PASSWORD = os.getenv("PASSWORD")  # this should already be URL-encoded in .env
+    HOST = os.getenv("HOST")
+    PORT = os.getenv("PORT")
+    DBNAME = os.getenv("DBNAME")
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    )
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'supersecretkey'

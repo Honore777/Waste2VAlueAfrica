@@ -7,4 +7,5 @@ try:
     with engine.connect() as conn:
         print("Connection successful!")
 except Exception as e:
-    print(f"Failed to connect: {e}")
+    print(f"Connection failed: {e}")
+
