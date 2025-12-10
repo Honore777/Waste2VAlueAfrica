@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Create Listing | EcoHub{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Create a New Listing</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="block text-gray-700") }}
+        {{ form.title(class="w-full border rounded px-3 py-2") }}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="block text-gray-700") }}
+        {{ form.description(class="w-full border rounded px-3 py-2") }}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity.label(class="block text-gray-700") }}
+        {{ form.quantity(class="w-full border rounded px-3 py-2") }}
+    </div>
+    <div class="mb-3">
+        {{ form.unit.label(class="block text-gray-700") }}
+        {{ form.unit(class="w-full border rounded px-3 py-2") }}
+    </div>
+    <div class="mb-3">
+        {{ form.category_id.label(class="block text-gray-700") }}
+        {{ form.category_id(class="w-full border rounded px-3 py-2") }}
+    </div>
+    {{ form.submit(class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700") }}
+</form>
+{% endblock %}

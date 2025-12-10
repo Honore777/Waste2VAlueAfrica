@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Conversation | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Conversation</h2>
+
+    <div class="space-y-2 mb-6 max-h-96 overflow-y-auto">
+        {% for msg in conversation.messages %}
+        <div class="p-3 rounded-xl {% if msg.sender == current_user %}bg-green-100 text-right ml-auto{% else %}bg-gray-100 text-left mr-auto{% endif %}">
+            <p class="text-sm">{{ msg.content }}</p>
+            <div class="text-xs text-gray-500 mt-1">{{ msg.sender.username }} • {{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" class="flex space-x-2">
+        <input type="text" name="content" class="flex-grow border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Type a message..." required>
+        <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition font-semibold">Send</button>
+    </form>
+</div>
+{% endblock %}

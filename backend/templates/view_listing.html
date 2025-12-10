@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }} | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-lg p-6">
+
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ listing.title }}</h1>
+    <p class="text-gray-500 mb-1">{{ listing.category.name if listing.category else 'Uncategorized' }} • {{ listing.quantity }} {{ listing.unit }}</p>
+    <p class="text-gray-700 mb-4">{{ listing.description }}</p>
+    <p class="text-sm text-gray-400">Posted on: {{ listing.created_at.strftime('%Y-%m-%d') }}</p>
+
+    {% if listing.images %}
+    <div class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+        {% for img in listing.images %}
+        <img src="{{ img.image_url }}" alt="{{ img.alt_text or 'Listing Image' }}" class="w-full h-48 object-cover rounded-xl shadow-md hover:scale-105 transition transform">
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mt-6 flex gap-4">
+        <a href="{{ url_for('marketplace.create_listing') }}" class="px-5 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-semibold">
+            Create New Listing
+        </a>
+        <a href="{{ url_for('marketplace.listings') }}" class="px-5 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition font-semibold">
+            Back to Marketplace
+        </a>
+    </div>
+
+</div>
+{% endblock %}

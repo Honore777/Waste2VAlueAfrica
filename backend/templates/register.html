@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Register | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-green-50 py-10">
+    <div class="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8">
+
+        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Create an Account</h2>
+
+        <form method="POST" class="space-y-5">
+            {{ form.hidden_tag() }}
+
+            <div>
+                {{ form.username.label(class="block text-gray-700 font-semibold mb-1") }}
+                {{ form.username(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+            </div>
+
+            <div>
+                {{ form.email.label(class="block text-gray-700 font-semibold mb-1") }}
+                {{ form.email(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+            </div>
+
+            <div>
+                {{ form.password.label(class="block text-gray-700 font-semibold mb-1") }}
+                {{ form.password(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+            </div>
+
+            <div>
+                {{ form.confirm_password.label(class="block text-gray-700 font-semibold mb-1") }}
+                {{ form.confirm_password(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+            </div>
+
+            <div>
+                {{ form.role.label(class="block text-gray-700 font-semibold mb-1") }}
+                {{ form.role(class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600") }}
+            </div>
+
+            <div>
+                {{ form.submit(class="w-full bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition font-semibold") }}
+            </div>
+        </form>
+
+        <p class="text-center text-gray-600 mt-4">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}" class="text-green-600 hover:underline font-semibold">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

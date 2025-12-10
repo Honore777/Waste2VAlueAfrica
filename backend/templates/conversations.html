@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Messages | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Your Conversations</h1>
+
+{% if conversations %}
+<div class="space-y-4 max-w-3xl mx-auto">
+    {% for conv in conversations %}
+    <div class="bg-white p-4 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+        <a href="{{ url_for('messaging.view_conversation', conversation_id=conv.id) }}" class="text-gray-800 font-semibold hover:text-green-600">
+            Chat with {% for u in conv.participants if u != current_user %}{{ u.username }}{% endfor %}
+        </a>
+        <p class="text-sm text-gray-500 mt-1">{{ conv.messages[-1].content[:50] if conv.messages else 'No messages yet' }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-gray-600 text-center">You have no conversations yet.</p>
+{% endif %}
+{% endblock %}

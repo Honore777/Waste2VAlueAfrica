@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}Community | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Community Posts</h1>
+
+{% if posts %}
+<div class="space-y-4">
+    {% for p in posts %}
+    <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+
+        <!-- TITLE -->
+        <h2 class="text-lg font-semibold text-gray-800 hover:text-green-600">
+            <a href="{{ url_for('community.view_post', slug=p.slug) }}">
+                {{ p.title }}
+            </a>
+        </h2>
+
+        <!-- CONTENT SNIPPET -->
+        <p class="text-gray-600 mt-2">
+            {{ p.content[:300] ~ ('...' if p.content|length > 300 else '') }}
+        </p>
+
+        <!-- IMAGE -->
+        {% if p.image %}
+        <div class="mt-2">
+            <img src="{{ url_for('static', filename='uploads/posts/' + p.image) }}"
+                 loading="lazy"
+                 alt="Post Image"
+                 class="rounded-lg shadow-md max-w-full h-auto">
+        </div>
+        {% endif %}
+
+        <!-- AUTHOR & DATE -->
+        <div class="mt-2 text-sm text-gray-500">
+            By {{ p.author.username if p.author else 'Unknown' }} 
+            on {{ p.created_at.strftime('%Y-%m-%d') }}
+        </div>
+
+        <!-- Interaction Buttons -->
+        <div class="flex items-center gap-6 mt-4 text-gray-700">
+            <!-- Upvote -->
+            <button class="upvote-btn px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200"
+                    data-post-id="{{ p.id }}">
+                👍 Upvote (<span class="upvote-count">{{ p.upvotes.count() }}</span>)
+            </button>
+
+            <!-- Comment Count -->
+            <button class="toggle-comments-btn flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
+                💬 <span class="comment-count">{{ p.comments.count() }}</span>
+            </button>
+
+            <!-- Share -->
+            <button class="flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                ↗ Share
+            </button>
+        </div>
+
+        <!-- Comment Section (hidden initially) -->
+        <div class="comment-section mt-4 hidden" data-post-id="{{ p.id }}">
+
+            <!-- Add Comment -->
+            <form class="comment-form mb-3">
+                <textarea class="comment-input w-full p-3 border rounded-lg focus:ring focus:outline-none"
+                          rows="2"
+                          placeholder="Write a comment..."></textarea>
+                <button type="submit"
+                        class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Post Comment
+                </button>
+            </form>
+
+            <!-- Display Comments -->
+            <div class="comments-list">
+                {% for comment in p.comments %}
+                <div class="comment p-3 border rounded-lg mb-3 bg-gray-50" data-comment-id="{{ comment.id }}">
+                    <p class="font-semibold">{{ comment.author.username if comment.author else "Unknown" }}</p>
+                    <p class="text-gray-700">{{ comment.content }}</p>
+                    <button class="reply-btn text-sm text-blue-600" data-comment-id="{{ comment.id }}">Reply</button>
+
+                    <div class="ml-6 mt-2 replies"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-gray-600">No community posts yet.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // ----------------- Upvotes -----------------
+    document.querySelectorAll('.upvote-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+            const postId = button.dataset.postId;
+            const response = await fetch(`/community/upvote/${postId}`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded', 'X-CSRFToken': csrfToken},
+                credentials: 'include'
+            });
+            try {
+                const data = await response.json();
+                if (data.status === 'success') {
+                    button.querySelector('.upvote-count').textContent = data.total_upvotes;
+                }
+            } catch(err) { console.error(err, await response.text()); }
+        });
+    });
+
+    // ----------------- Toggle Comment Sections -----------------
+    document.querySelectorAll('.toggle-comments-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const postDiv = btn.closest('div.bg-white');
+            const commentSection = postDiv.querySelector('.comment-section');
+            commentSection.classList.toggle('hidden');
+        });
+    });
+
+    // ----------------- Comment Submission -----------------
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const postDiv = form.closest('div.bg-white');
+            const postId = postDiv.querySelector('.comment-section').dataset.postId;
+            const commentInput = form.querySelector('.comment-input');
+            const content = commentInput.value.trim();
+            if(!content) return;
+
+            const response = await fetch(`/community/comment/${postId}`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken': csrfToken},
+                body: new URLSearchParams({content: content}),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+            if(data.status === 'success') {
+                const commentsList = postDiv.querySelector('.comments-list');
+                const newComment = document.createElement('div');
+                newComment.classList.add('comment','p-3','border','rounded-lg','mb-3','bg-gray-50');
+                newComment.dataset.commentId = data.comment.id;
+                newComment.innerHTML = `
+                    <p class="font-semibold">${data.comment.author}</p>
+                    <p class="text-gray-700">${data.comment.content}</p>
+                    <button class="reply-btn text-sm text-blue-600" data-comment-id="${data.comment.id}">Reply</button>
+                    <div class="ml-6 mt-2 replies"></div>
+                `;
+                commentsList.prepend(newComment);
+                commentInput.value = '';
+                // Update count
+                postDiv.querySelector('.comment-count').textContent = data.total_comments;
+            }
+        });
+    });
+
+    // ----------------- Reply Submission -----------------
+    document.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('reply-btn')) return;
+
+        const commentId = e.target.dataset.commentId;
+        const commentBox = e.target.closest('.comment');
+
+        // Avoid multiple reply forms
+        if(commentBox.querySelector('.reply-form')) return;
+
+        const form = document.createElement('form');
+        form.classList.add('reply-form','mt-2');
+        form.innerHTML = `
+            <textarea class="w-full p-2 border rounded-lg reply-input" rows="2" placeholder="Write a reply..."></textarea>
+            <button type="submit" class="mt-1 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Reply</button>
+        `;
+        commentBox.appendChild(form);
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const content = form.querySelector('.reply-input').value.trim();
+            if(!content) return;
+
+            const postDiv = commentBox.closest('div.bg-white');
+            const postId = postDiv.querySelector('.comment-section').dataset.postId;
+
+            const response = await fetch(`/community/comment/${postId}`, {
+                method:'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken': csrfToken},
+                body: new URLSearchParams({content: content, parent_id: commentId}),
+                credentials:'include'
+            });
+
+            const data = await response.json();
+            if(data.status === 'success') {
+                const repliesDiv = commentBox.querySelector('.replies');
+                const newReply = document.createElement('div');
+                newReply.classList.add('p-2','border','rounded-lg','mb-2','bg-white');
+                newReply.innerHTML = `
+                    <p class="font-semibold">${data.comment.author}</p>
+                    <p class="text-gray-700">${data.comment.content}</p>
+                `;
+                repliesDiv.appendChild(newReply);
+                form.remove();
+            }
+        });
+    });
+
+});
+</script>
+{% endblock %}

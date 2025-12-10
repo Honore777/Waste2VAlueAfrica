@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Marketplace | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Marketplace Listings</h1>
+
+{% if listings %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for l in listings %}
+    <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1">
+        <h2 class="text-xl font-semibold text-gray-800 hover:text-green-600">
+            <a href="{{ url_for('marketplace.view_listing', slug=l.slug) }}">{{ l.title }}</a>
+        </h2>
+        <p class="text-sm text-gray-500 mt-1">{{ l.category.name if l.category else 'Uncategorized' }} • {{ l.quantity }} {{ l.unit }}</p>
+        <p class="text-gray-700 mt-2">{{ l.description[:120] ~ ('...' if l.description|length > 120 else '') }}</p>
+        <p class="text-xs text-gray-400 mt-2">Posted on: {{ l.created_at.strftime('%Y-%m-%d') }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-gray-600">No listings found.</p>
+{% endif %}
+{% endblock %}

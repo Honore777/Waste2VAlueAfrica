@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Notifications | Waste2Value Africa{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8">
+
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Your Notifications</h2>
+        <a href="{{ url_for('notifications.read_all_notifications') }}"
+           class="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-semibold">
+           Mark all as read
+        </a>
+    </div>
+
+    {% if notifications %}
+    <div class="space-y-4">
+        {% for note in notifications %}
+        <div class="bg-white rounded-2xl shadow-md p-4 flex justify-between items-center hover:shadow-lg transition">
+            <div class="flex gap-2 items-center">
+                {% if note.icon %}
+                <i class="{{ note.icon }} text-green-600 text-xl"></i>
+                {% endif %}
+                <div>
+                    <p class="text-gray-700 font-medium {% if not note.is_read %}font-semibold{% endif %}">
+                        {{ note.message }}
+                    </p>
+                    <span class="text-xs text-gray-400">{{ note.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('notifications.read_notification', note_id=note.id) }}"
+               class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition font-semibold">
+               View
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center">No notifications found.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
