@@ -1,9 +1,11 @@
-# routes_messaging.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from models import Conversation, Message, User, conversation_participants
-from extensions import db
+
+from backend.models import Conversation, Message, User, conversation_participants
+from backend.extensions import db
+
 from datetime import datetime
+
 
 messaging_bp = Blueprint("messaging", __name__, template_folder="../templates")
 

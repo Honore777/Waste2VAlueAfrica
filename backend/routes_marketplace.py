@@ -1,9 +1,10 @@
-# backend/routes_marketplace.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from forms import ListingForm
-from models import Listing, Category, ListingImage
-from extensions import db
+
+from backend.forms import ListingForm
+from backend.models import Listing, Category, ListingImage
+from backend.extensions import db
+
 from datetime import datetime
 
 marketplace_bp = Blueprint("marketplace", __name__, template_folder="../templates")

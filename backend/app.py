@@ -1,6 +1,7 @@
-from extensions import db, login_manager, csrf, migrate
-from config import Config
+from backend.extensions import db, login_manager, csrf, migrate
+from backend.config import Config
 from flask import Flask, redirect, url_for, render_template
+
 
 def create_app():
     app = Flask(__name__)
@@ -18,13 +19,13 @@ def create_app():
     login_manager.login_message_category = 'info'
 
     # Import blueprints
-    from routes_auth import auth_bp
-    from routes import dashboard_bp
-    from routes_marketplace import marketplace_bp
-    from routes_community import community_bp
-    from routes_messaging import messaging_bp
-    from routes_profile import profile_bp
-    from routes_notifications import notifications_bp  # <- Add notifications blueprint
+    from backend.routes_auth import auth_bp
+    from backend.routes import dashboard_bp
+    from backend.routes_marketplace import marketplace_bp
+    from backend.routes_community import community_bp
+    from backend.routes_messaging import messaging_bp
+    from backend.routes_profile import profile_bp
+    from backend.routes_notifications import notifications_bp
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')

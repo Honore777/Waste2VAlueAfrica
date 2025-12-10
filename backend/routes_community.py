@@ -1,11 +1,14 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, jsonify,request
+from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, current_user
-from forms import PostForm
-from models import Post,PostUpvote, Notification, NotificationTypeEnum,Comment
-from extensions import db
+
+from backend.forms import PostForm
+from backend.models import Post, PostUpvote, Notification, NotificationTypeEnum, Comment
+from backend.extensions import db
+
 from datetime import datetime
 import secrets
 import os
+
 
 from werkzeug.utils import secure_filename
 

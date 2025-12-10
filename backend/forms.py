@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField, Intege
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, NumberRange,URL,Optional
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
-from models import User, RoleEnum, Category
+from backend.models import User, RoleEnum, Category
 
 class RegistrationForm(FlaskForm):
     username = StringField(

@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template
-
-from flask_login import login_required , current_user
-
+from flask_login import login_required, current_user
 from sqlalchemy import desc
-from extensions import db
-from models import (
+
+from backend.extensions import db
+from backend.models import (
     Listing,
     Post,
     Message,
@@ -12,6 +11,7 @@ from models import (
     PostUpvote,
     conversation_participants,
 )
+
 
 dashboard_bp= Blueprint('dashboard',__name__)
 

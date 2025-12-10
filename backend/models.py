@@ -8,7 +8,7 @@ from slugify import slugify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from sqlalchemy import Index, Table, UniqueConstraint
-from extensions import db  # your flask-sqlalchemy instance
+from backend.extensions import db  # your flask-sqlalchemy instance
 
 
 # ----------------------------

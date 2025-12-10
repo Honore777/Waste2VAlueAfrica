@@ -1,17 +1,18 @@
-from forms import EditProfileForm, AvatarUploadForm
+from backend.forms import EditProfileForm, AvatarUploadForm
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 
-from extensions import db
+from backend.extensions import db
 from datetime import datetime
+
 
 import os 
 from  werkzeug.utils import secure_filename
 import imghdr
 import uuid
 
-from models import User, Post
+from backend.models import User, Post
 
 
 
