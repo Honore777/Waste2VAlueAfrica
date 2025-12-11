@@ -39,7 +39,7 @@ def create_app():
     # Context processor to inject models into templates globally
     @app.context_processor
     def inject_models():
-        from models import Notification, Post, Listing
+        from backend.models import Notification, Post, Listing
         return dict(Notification=Notification, Post=Post, Listing=Listing)
 
     # Home redirect
