@@ -3,7 +3,7 @@ from backend.config import Config
 from flask import Flask, redirect, url_for, render_template
 
 
-def create_app():
+def create_app(*args,**kwargs):
     app = Flask(__name__)
     app.config.from_object(Config)
 
