@@ -9,10 +9,18 @@ from datetime import datetime
 
 import os 
 from  werkzeug.utils import secure_filename
-import imghdr
+from PIL import Image
 import uuid
 
 from backend.models import User, Post
+
+def detect_image_type(file_storage):
+    try:
+        img=Image.open(file_storage)
+        return img.format.lower()
+    except Exception:
+        return None
+
 
 
 
@@ -55,7 +63,7 @@ def upload_avatar():
     file = form.avatar.data
 
     # Extra validation: check real image type
-    kind = imghdr.what(file)
+    kind = detect_image_type(file)
     if kind not in ["jpeg", "png", "webp"]:
         flash("Invalid or corrupted image file!", "danger")
         return redirect(url_for("profile.edit_profile"))
